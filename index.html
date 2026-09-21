@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A Little Place Called Us ♡</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#ff6fae">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+<div id="lock" class="lock-screen">
+  <div class="lock-card">
+    <div class="lock-heart">♡</div>
+    <p class="eyebrow">PRIVATE LITTLE WORLD</p>
+    <h1>Just for D & Alice</h1>
+    <p id="lockIntro">A tiny place that belongs to us. Create a private code the first time you open it.</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="Private code">
+    <button class="primary" onclick="unlock()">Enter our world ♡</button>
+    <p id="lockHint" class="hint"></p><button class="forgot" onclick="forgotCode()">Forgot the code?</button>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<button id="installAppBtn" class="install-app hidden" type="button">📱 Install our app</button>
+<header class="hero">
+  <button class="stars" aria-label="tiny stars" onclick="findClue(2)"></button>
+  <button class="tape" aria-label="little piece of tape" onclick="findClue(1)"></button>
+  <p class="tiny">made for D, by Alice ♡</p>
+  <h1>A Little Place<br>Called Us</h1>
+  <p class="subtitle">A tiny corner of the internet for our memories, our silly moments, our future plans, and all the little pieces of Alice that D can keep close.</p>
+  <div class="hero-buttons">
+    <button id="openWorldBtn" class="primary" type="button" onclick="openLetter()">Open your little world 💌</button>
+    <button class="ghost" id="musicBtn" type="button" onclick="toggleMusic()">♫ Play our little soundtrack</button>
+  </div>
+  <div class="scroll-note">↓ there are secrets hidden here ↓</div>
+</header>
+
+<main>
+<section id="welcome" class="paper hidden">
+  <button class="x" onclick="this.parentElement.classList.add('hidden')">×</button>
+  <p class="eyebrow">TO DAVID</p>
+  <h2>Hi, Baby. ♡</h2>
+  <p>Welcome to our little corner of the internet.</p>
+  <p>It's not very big, but that's kind of the point. It's a place for our memories, our silly moments, our future plans, and all the things I wish I could give you when I can't physically be there.</p>
+  <p>So whenever you miss me, come here.</p>
+  <p>There's a little bit of Alice waiting for you. 🎀</p>
+  <p class="signature">— Alice ♡</p>
+</section>
+
+<section class="rooms">
+  <div class="section-heading"><p class="eyebrow">OUR LITTLE WORLD</p><h2>Pick a room ✦</h2></div>
+  <div class="grid">
+    <button id="letterBoxBtn" class="room" type="button" onclick="openLetters()"><span>💌</span><b>The Letter Box</b><small>Open when...</small></button>
+    <button class="room" onclick="showPanel('missme')"><span>🧸</span><b>Miss Me?</b><small>Emergency boyfriend care</small></button>
+    <button class="room" onclick="showPanel('countdown')"><span>🌙</span><b>Until We Meet</b><small>June 2027</small></button>
+    <button class="room" onclick="showPanel('future')"><span>🏡</span><b>Our Future Board</b><small>Pin the life we want ♡</small></button>
+    <button class="room" onclick="showPanel('story')"><span>📖</span><b>Our Story</b><small>How we became us</small></button>
+    <button class="room" onclick="showPanel('kitchen')"><span>📖</span><b>D's Kitchen</b><small>Our little recipe book</small></button>
+    <button class="room" onclick="showPanel('thelist')"><span>🎬</span><b>The List</b><small>Movies & series we want to watch</small></button>
+    <button class="room" onclick="showPanel('memories')"><span>📸</span><b>Our Memories</b><small>Photos & little moments</small></button>
+    <button class="room" onclick="showPanel('playlist')"><span>🎵</span><b>Our Little Playlist</b><small>Our songs together</small></button>
+    <button class="room" onclick="showPanel('plans')"><span>🌷</span><b>Our Plans</b><small>Things we want to do together</small></button>
+    <button class="room" onclick="showPanel('distance')"><span>🌍</span><b>Lusaka ↔ Baku</b><small>Two cities, one us</small></button>
+    <button class="room" onclick="showPanel('walk')"><span>🚶🏽‍♀️</span><b>Walk With Me</b><small>Questions for us</small></button>
+    <button class="room" onclick="showPanel('edit')"><span>✏️</span><b>Our Little Editor</b><small>Edit everything ♡</small></button>
+  </div>
+</section>
+
+<section id="panel" class="panel hidden">
+<button class="close" onclick="closePanel()">×</button><div id="panelContent"></div>
+</section>
+
+<section class="surprise-strip">
+  <div><span>✨</span><b>Today's tiny surprise</b><p id="dailySurprise"></p><button class="mini" onclick="newSurprise()">Another one ♡</button></div>
+</section>
+
+<section class="secret">
+  <p id="clueProgress" class="clue-progress">There may be something hidden here... ♡</p>
+  <button aria-label="secret heart" onclick="secretHeart();findClue(0)">♡</button>
+  <p id="secretMessage"></p>
+</section>
+</main>
+
+<footer>
+  <button class="footer-secret" onclick="findClue(3)">Alice ♡ D</button>
+  <small>still writing our story...</small>
+  <div id="secretRoom" class="secret-room hidden">
+    <div class="secret-room-inner">
+      <p class="eyebrow">YOU FOUND IT</p>
+      <h2>D's Secret Room 🔐❤️</h2>
+      <p class="secret-note">Okay, My Love... if you made it all the way here, you deserve the part I hid just for you.</p>
+      <div class="message">
+        <b>A letter from Alice</b><br><br>
+        If you're reading this, I hope you smiled a little while finding it.
+        I made this whole tiny world because sometimes I can't physically be there
+        to hug you, annoy you, cook with you, go on long walks with you, or sit beside
+        you while you watch your anime and basketball. So I put little pieces of us here instead.
+        <br><br>
+        I love the ordinary things about us just as much as the big things.
+        And when June 2027 comes, I hope we get to close this website, look at each other,
+        and laugh because we don't need a screen to feel close anymore.
+        <br><br>
+        Until then... come back whenever you miss me.
+        <br><br>
+        <span class="signature">Love, Alice ♡</span>
+      </div>
+      <video class="secret-video" controls playsinline preload="metadata" src="assets/memory-video-1.mp4"></video>
+      <p class="eyebrow">THE FINAL CLUE</p>
+      <p>There is no final clue. You found the final room. ♡</p>
+    </div>
+  </div>
+</footer>
+</div>
+<script src="script.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(()=>{});}</script>
+</body>
+</html>
