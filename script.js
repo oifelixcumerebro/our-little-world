@@ -1,11 +1,7 @@
-const SUPABASE_URL = "https://qnedtzxhmreyfbslfdqs.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_di_rJ44QSBpkJdYTXUo6-Q_nzAL4ZPu";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
 const panel=document.getElementById("panel"),content=document.getElementById("panelContent");
 const surprises=["Go look at one of our photos and remember exactly what was happening five minutes before it was taken. ♡","Today's reminder: you are loved by a girl who made an entire website about you. 😭❤️","Send Alice a random picture of what you're doing right now. No explanation.","Plan the next thing you want to cook together. 🍳","Ask Alice: 'What is one ordinary thing you can't wait to do with me?'","Emergency instruction: imagine Alice stealing a bite from your plate. 😂"];
 let foundClues=JSON.parse(localStorage.getItem("aliceD_clues")||"[]");
-const KEY = "aliceD_little_world_data_v2";
+const KEY="aliceD_little_world_data_v2";
 const LEGACY_KEYS=["aliceD_v6_data","aliceD_v7_data","aliceD_v8_data","aliceD_v9_data","aliceD_v10_data"];
 const defaults={story:[{title:"Chapter 1 — Through Mutuals",text:"Somehow, through mutuals and campus life, two people who didn't know what was coming ended up finding each other."},{title:"Chapter 2 — Zikhalo's Room",text:"The first time we actually sat and talked, everything felt natural. Nothing forced. Nothing awkward. Just... easy. ♡"},{title:"Chapter 3 — Seven Months & Counting",text:"And somehow, all those little conversations became an actual us."},{title:"Chapter 4 — Long Distance",text:"Alice ♡ ————— ♡ D\nDifferent places. Same story."}], memories:[{title:"my girl ♡",caption:"my girl ♡",src:"alice-1.jpg",kind:"image"},{title:"my love ♡",caption:"my love ♡",src:"d-1.jpg",kind:"image"},{title:"one of my favourite us moments",caption:"one of my favourite us moments",src:"assets/memory-1.jpg",kind:"image"},{title:"us. just us. ♡",caption:"us. just us. ♡",src:"us-1.jpg",kind:"image"},{title:"a little memory 🎥",caption:"a little memory 🎥",src:"memory-video-1.mp4",kind:"video"},{title:"another little memory 🎥",caption:"another little memory 🎥",src:"memory-video-2.mp4",kind:"video"}],kitchen:[],watchlist:[],futureboard:[],letters:[],coupons:[],plans:[],distance:{lusakaTitle:"Lusaka, Zambia",bakuTitle:"Baku, Azerbaijan",lusakaNote:"Where Alice is",bakuNote:"Where D is",bridgeTitle:"Same love, different skies.",bridgeText:"About 6,600 km apart, but still living inside the same little world. ♡",lusakaMessage:"A little piece of home, waiting for you.",bakuMessage:"A little piece of you, waiting for me.",lusakaPlaces:"Home • Lusaka",bakuPlaces:"Home • Baku"},playlist:[
 {name:"Love You I Do — Jennifer Hudson",spotify:"https://open.spotify.com/embed/track/4IjoD5u5E3Nv6ecnCpeWpy",url:"https://open.spotify.com/track/4IjoD5u5E3Nv6ecnCpeWpy"},
@@ -14,52 +10,6 @@ const defaults={story:[{title:"Chapter 1 — Through Mutuals",text:"Somehow, thr
 {name:"Virgo’s Groove — Beyoncé",spotify:"https://open.spotify.com/embed/track/0Fl4eWzVaMUOdXcOrj6F1q",url:"https://open.spotify.com/track/0Fl4eWzVaMUOdXcOrj6F1q"},
 {name:"1+1 — Beyoncé",spotify:"https://open.spotify.com/embed/track/1pzJboOZaDNwshBnOlNh3a",url:"https://open.spotify.com/track/1pzJboOZaDNwshBnOlNh3a"}
 ]};
-
-async function loadSharedData(){
-  try{
-    const {data:row,error}=await supabaseClient
-      .from("little_world")
-      .select("data")
-      .eq("id",1)
-      .maybeSingle();
-
-    if(error) throw error;
-
-    if(row && row.data && Object.keys(row.data).length){
-      const merged={...JSON.parse(JSON.stringify(defaults)),...row.data};
-      localStorage.setItem(KEY,JSON.stringify(merged));
-      return merged;
-    }
-  }catch(e){
-    console.warn("Shared data could not be loaded:",e);
-  }
-  return data();
-}
-
-async function saveSharedData(d){
-
-  try{
-    const {error}=await supabaseClient
-      .from("little_world")
-      .upsert({
-        id:1,
-        data:d,
-        updated_at:new Date().toISOString()
-      });
-
-    if(error) throw error;
-  }catch(e){
-    console.warn("Shared data could not be saved:",e);
-  }
-}
-
-async function syncSharedData(){
-  const shared=await loadSharedData();
-  if(shared) window.__sharedData=shared;
-}
-
-syncSharedData();
-
 function data(){
   try{
     let raw=localStorage.getItem(KEY);
@@ -67,15 +17,12 @@ function data(){
     const parsed=raw?JSON.parse(raw):JSON.parse(JSON.stringify(defaults));
     return {...JSON.parse(JSON.stringify(defaults)), ...parsed};
   }catch(e){return JSON.parse(JSON.stringify(defaults));}
-
+} function saveData(d){localStorage.setItem(KEY,JSON.stringify(d));localStorage.setItem(KEY+"_updated",String(Date.now()));}
 function toast(t){let x=document.createElement("div");x.className="toast";x.textContent=t;document.body.appendChild(x);setTimeout(()=>x.remove(),1800)}
 function esc(s=""){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
 function updateClueProgress(){const el=document.getElementById("clueProgress");if(!el)return;el.textContent=foundClues.length<3?`You found ${foundClues.length}/3 hidden clues... ♡`:"Three clues found. Something has unlocked below... ✨"}
 function findClue(n){if(!foundClues.includes(n)){foundClues.push(n);localStorage.setItem("aliceD_clues",JSON.stringify(foundClues))}updateClueProgress();if(foundClues.length>=3){const room=document.getElementById("secretRoom");if(room)room.classList.remove("hidden");setTimeout(()=>room?.scrollIntoView({behavior:"smooth",block:"center"}),150)}}
-function setupLock(){
-  document.getElementById("lock").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-}
+function setupLock(){const saved=localStorage.getItem("aliceD_pin");if(!saved)document.getElementById("lockIntro").textContent="Make a private code for this little world. It stays on this browser.";else{document.getElementById("lockIntro").textContent="Our little world is private. Enter the code to come in. ♡";document.getElementById("lockHint").textContent="(This code is stored only in this browser.)"}}
 function unlock(){const input=document.getElementById("pin").value.trim();if(!input){document.getElementById("lockHint").textContent="Choose a little code first. ♡";return}const saved=localStorage.getItem("aliceD_pin");if(!saved){localStorage.setItem("aliceD_pin",input);enterApp()}else if(input===saved)enterApp();else document.getElementById("lockHint").textContent="Hmm... that's not our code. Try again. 💌"}
 function forgotCode(){if(confirm("This will erase the saved code on this browser. Your photos, videos and website files will NOT be deleted. Continue?")){localStorage.removeItem("aliceD_pin");document.getElementById("lockHint").textContent="Code reset. Create a new one below. ♡";document.getElementById("pin").value="";document.getElementById("lockIntro").textContent="Make a new private code for this little world."}}
 function enterApp(){document.getElementById("lock").classList.add("hidden");document.getElementById("app").classList.remove("hidden");newSurprise();updateClueProgress();if(foundClues.length>=3)document.getElementById("secretRoom").classList.remove("hidden")}

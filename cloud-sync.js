@@ -1,131 +1,237 @@
 /* A Little Place Called Us — shared cloud sync layer
-   Uses Firebase Firestore + anonymous authentication.
-   It is intentionally optional: until Firebase is configured, the existing
-   localStorage version continues to work exactly as before.
+   Firebase Firestore + anonymous authentication.
 */
+
 (function () {
+
   const FIREBASE_CONFIG = {
-    apiKey: "PASTE_FIREBASE_API_KEY_HERE",
-    authDomain: "PASTE_FIREBASE_PROJECT_ID.firebaseapp.com",
-    projectId: "PASTE_FIREBASE_PROJECT_ID",
-    storageBucket: "PASTE_FIREBASE_PROJECT_ID.firebasestorage.app",
-    messagingSenderId: "PASTE_FIREBASE_MESSAGING_SENDER_ID_HERE",
-    appId: "PASTE_FIREBASE_APP_ID_HERE"
+    apiKey: "AIzaSyBLQB9Cd7HvcOBTjScv_WpbqneXEbO5RE0",
+    authDomain: "our-little-world-3fb42.firebaseapp.com",
+    projectId: "our-little-world-3fb42",
+    storageBucket: "our-little-world-3fb42.firebasestorage.app",
+    messagingSenderId: "397017583399",
+    appId: "1:397017583399:web:303387e1cdaa947985e302"
   };
-
-  const configured = Object.values(FIREBASE_CONFIG).every(v =>
-    typeof v === "string" &&
-    v &&
-    !v.includes("PASTE_FIREBASE_") &&
-    !v.includes("PASTE_FIREBASE_PROJECT_ID")
-  );
-
-  if (!configured) {
-    console.info("[A Little Place Called Us] Cloud sync is not configured yet. Local saving remains active.");
-    return;
-  }
 
   const COLLECTION = "coupleWorlds";
   const DOC_ID = "alice-david";
   const DATA_KEY = "aliceD_little_world_data_v2";
   const UPDATED_KEY = DATA_KEY + "_updated";
+
   let db = null;
-  let remoteListenerStarted = false;
+  let firestore = null;
   let applyingRemote = false;
 
   function loadFirebase() {
+
     return Promise.all([
-      import("https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"),
-      import("https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js")
-    ]).then(([appMod, authMod, firestoreMod]) => {
+      import("https://www.gstatic.com/firebase/11.0.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebase/11.0.2/firebase-auth.js"),
+      import("https://www.gstatic.com/firebase/11.0.2/firebase-firestore.js")
+    ])
+
+    .then(([appMod, authMod, firestoreMod]) => {
+
       const app = appMod.initializeApp(FIREBASE_CONFIG);
+
       const auth = authMod.getAuth(app);
+
       db = firestoreMod.getFirestore(app);
+      firestore = firestoreMod;
 
-      return authMod.signInAnonymously(auth).then(() => ({
-        firestoreMod,
-        auth
-      }));
+      return authMod.signInAnonymously(auth);
     });
   }
 
-  function replaceLocalData(remote) {
-    if (!remote || typeof remote !== "object") return;
-    applyingRemote = true;
-    try {
-      localStorage.setItem(DATA_KEY, JSON.stringify(remote));
-      localStorage.setItem(UPDATED_KEY, String(Date.now()));
-    } finally {
-      applyingRemote = false;
-    }
-  }
-
-  function refreshOpenPanel() {
-    const panel = document.getElementById("panel");
-    if (!panel || panel.classList.contains("hidden")) return;
-    const open = document.querySelector(".room.active-room");
-    if (open && open.dataset.panelType && typeof window.showPanel === "function") {
-      window.showPanel(open.dataset.panelType);
-    }
-  }
-
-  function startListener(firestoreMod) {
-    if (remoteListenerStarted) return;
-    remoteListenerStarted = true;
-    const ref = firestoreMod.doc(db, COLLECTION, DOC_ID);
-    firestoreMod.onSnapshot(ref, snap => {
-      if (!snap.exists()) return;
-      const remote = snap.data().world;
-      if (!remote) return;
-      const remoteUpdated = Number(snap.data().updatedAt || 0);
-      const localUpdated = Number(localStorage.getItem(UPDATED_KEY) || 0);
-      if (remoteUpdated < localUpdated) return;
-      replaceLocalData(remote);
-      window.dispatchEvent(new CustomEvent("aliceD:cloud-updated"));
-      refreshOpenPanel();
-    }, err => {
-      console.error("[A Little Place Called Us] Cloud listener error:", err);
-    });
-  }
 
   function uploadCurrent() {
-    if (!db || applyingRemote) return;
-    let local;
+
+    if (!db || !firestore || applyingRemote) return;
+
+    let localData;
+
     try {
-      local = JSON.parse(localStorage.getItem(DATA_KEY) || "null");
-    } catch (_) {
+      localData = JSON.parse(
+        localStorage.getItem(DATA_KEY) || "null"
+      );
+    } catch (error) {
+      console.error(
+        "[A Little Place Called Us] Could not read local data:",
+        error
+      );
       return;
     }
-    if (!local) return;
 
-    const firestoreMod = window.__aliceD_firestore;
-    if (!firestoreMod) return;
-    const updatedAt = Number(localStorage.getItem(UPDATED_KEY) || Date.now());
+    if (!localData) return;
 
-    firestoreMod.setDoc(
-      firestoreMod.doc(db, COLLECTION, DOC_ID),
-      { world: local, updatedAt },
-      { merge: false }
-    ).catch(err => console.error("[A Little Place Called Us] Cloud save error:", err));
+    const updatedAt =
+      Number(localStorage.getItem(UPDATED_KEY) || Date.now());
+
+    firestore.setDoc(
+      firestore.doc(db, COLLECTION, DOC_ID),
+      {
+        world: localData,
+        updatedAt: updatedAt
+      },
+      {
+        merge: false
+      }
+    )
+    .then(() => {
+      console.log(
+        "[A Little Place Called Us] Cloud save successful ✓"
+      );
+    })
+    .catch(error => {
+      console.error(
+        "[A Little Place Called Us] Cloud save failed:",
+        error
+      );
+    });
   }
 
-  loadFirebase().then(({ firestoreMod }) => {
-    window.__aliceD_firestore = firestoreMod;
-    startListener(firestoreMod);
-    window.dispatchEvent(new CustomEvent("aliceD:cloud-ready"));
-    uploadCurrent();
-  }).catch(err => {
-    console.error("[A Little Place Called Us] Cloud sync could not start:", err);
-  });
 
-  const originalSaveData = window.saveData;
-  if (typeof originalSaveData === "function") {
-    window.saveData = function (d) {
-      originalSaveData(d);
+  function startCloudListener() {
+
+    const ref = firestore.doc(
+      db,
+      COLLECTION,
+      DOC_ID
+    );
+
+    firestore.onSnapshot(
+      ref,
+
+      snapshot => {
+
+        if (!snapshot.exists()) {
+          console.log(
+            "[A Little Place Called Us] No cloud data yet."
+          );
+          return;
+        }
+
+        const cloud = snapshot.data();
+
+        if (!cloud || !cloud.world) return;
+
+        const cloudUpdated =
+          Number(cloud.updatedAt || 0);
+
+        const localUpdated =
+          Number(
+            localStorage.getItem(UPDATED_KEY) || 0
+          );
+
+        /*
+          Do not overwrite newer local changes.
+        */
+        if (cloudUpdated < localUpdated) {
+          return;
+        }
+
+        applyingRemote = true;
+
+        try {
+
+          localStorage.setItem(
+            DATA_KEY,
+            JSON.stringify(cloud.world)
+          );
+
+          localStorage.setItem(
+            UPDATED_KEY,
+            String(cloudUpdated)
+          );
+
+          window.dispatchEvent(
+            new CustomEvent("aliceD:cloud-updated")
+          );
+
+          console.log(
+            "[A Little Place Called Us] Cloud data loaded ✓"
+          );
+
+        } finally {
+
+          applyingRemote = false;
+
+        }
+
+      },
+
+      error => {
+
+        console.error(
+          "[A Little Place Called Us] Cloud listener error:",
+          error
+        );
+
+      }
+    );
+  }
+
+
+  /*
+    Watch for changes made by the website.
+
+    This means when Alice or David adds:
+    - memories
+    - recipes
+    - movies
+    - songs
+    - letters
+    - future-board items
+
+    the changed data is uploaded automatically.
+  */
+
+  const originalSetItem = Storage.prototype.setItem;
+
+  Storage.prototype.setItem = function (key, value) {
+
+    originalSetItem.call(this, key, value);
+
+    if (
+      key === DATA_KEY &&
+      !applyingRemote
+    ) {
+      setTimeout(uploadCurrent, 0);
+    }
+  };
+
+
+  /*
+    Start Firebase.
+  */
+
+  loadFirebase()
+
+    .then(() => {
+
+      console.log(
+        "[A Little Place Called Us] Firebase connected ✓"
+      );
+
+      window.__aliceD_cloud_ready = true;
+
+      startCloudListener();
+
+      /*
+        Upload whatever is currently on this device.
+        This gives the cloud its initial copy.
+      */
       uploadCurrent();
-    };
-  }
 
-  window.addEventListener("aliceD:cloud-ready", uploadCurrent);
+    })
+
+    .catch(error => {
+
+      console.error(
+        "[A Little Place Called Us] Firebase could not start:",
+        error
+      );
+
+    });
+
 })();
