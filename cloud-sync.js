@@ -1,6 +1,6 @@
 /* A Little Place Called Us — shared cloud sync layer
    Firebase Firestore + anonymous authentication.
-   Uses browser-compatible Firebase compat scripts loaded by index.html.
+   Prevents cloud/local sync loops.
 */
 
 (function () {
@@ -21,7 +21,13 @@
 
   let db = null;
   let applyingRemote = false;
+  let initialLoadComplete = false;
+  let saveTimer = null;
 
+
+  /* -----------------------------
+     START FIREBASE
+  ----------------------------- */
 
   function loadFirebase() {
 
@@ -39,7 +45,8 @@
 
         db = firebase.firestore();
 
-        firebase.auth().signInAnonymously()
+        firebase.auth()
+          .signInAnonymously()
           .then(resolve)
           .catch(reject);
 
@@ -53,6 +60,10 @@
 
   }
 
+
+  /* -----------------------------
+     SAVE LOCAL DATA TO CLOUD
+  ----------------------------- */
 
   function uploadCurrent() {
 
@@ -110,6 +121,33 @@
   }
 
 
+  /* -----------------------------
+     DELAYED SAVE
+     Prevents multiple saves firing
+     at the same time.
+  ----------------------------- */
+
+  function scheduleUpload() {
+
+    if (!initialLoadComplete || applyingRemote) {
+      return;
+    }
+
+    clearTimeout(saveTimer);
+
+    saveTimer = setTimeout(() => {
+
+      uploadCurrent();
+
+    }, 500);
+
+  }
+
+
+  /* -----------------------------
+     LISTEN FOR CLOUD CHANGES
+  ----------------------------- */
+
   function startCloudListener() {
 
     db.collection(COLLECTION)
@@ -124,13 +162,18 @@
               "[A Little Place Called Us] No cloud data yet."
             );
 
+            initialLoadComplete = true;
+
             return;
 
           }
 
           const cloud = snapshot.data();
 
-          if (!cloud || !cloud.world) return;
+          if (!cloud || !cloud.world) {
+            initialLoadComplete = true;
+            return;
+          }
 
           const cloudUpdated = Number(
             cloud.updatedAt || 0
@@ -142,13 +185,42 @@
 
 
           /*
-            Do not overwrite newer local changes.
+            If this device already has the exact
+            same version, do absolutely nothing.
+
+            This is what prevents the cloud/local
+            save loop.
+          */
+
+          if (
+            cloudUpdated === localUpdated &&
+            localStorage.getItem(DATA_KEY) ===
+            JSON.stringify(cloud.world)
+          ) {
+
+            initialLoadComplete = true;
+
+            return;
+
+          }
+
+
+          /*
+            Never overwrite newer local changes.
           */
 
           if (cloudUpdated < localUpdated) {
+
+            initialLoadComplete = true;
+
             return;
+
           }
 
+
+          /*
+            Apply cloud data locally.
+          */
 
           applyingRemote = true;
 
@@ -178,6 +250,8 @@
 
           }
 
+          initialLoadComplete = true;
+
         },
 
         error => {
@@ -194,19 +268,9 @@
   }
 
 
-  /*
-    Watch for changes made by the website.
-
-    When Alice or David adds:
-    - memories
-    - recipes
-    - movies
-    - songs
-    - letters
-    - future-board items
-
-    the changed data is uploaded automatically.
-  */
+  /* -----------------------------
+     WATCH WEBSITE CHANGES
+  ----------------------------- */
 
   const originalSetItem = Storage.prototype.setItem;
 
@@ -219,16 +283,16 @@
       !applyingRemote
     ) {
 
-      setTimeout(uploadCurrent, 0);
+      scheduleUpload();
 
     }
 
   };
 
 
-  /*
-    Start Firebase.
-  */
+  /* -----------------------------
+     START EVERYTHING
+  ----------------------------- */
 
   loadFirebase()
 
@@ -240,14 +304,24 @@
 
       window.__aliceD_cloud_ready = true;
 
+      /*
+        Start listening first.
+        This allows the cloud copy to load before
+        we start uploading local changes.
+      */
+
       startCloudListener();
 
       /*
-        Upload whatever is currently on this device.
-        This gives the cloud its initial copy.
+        Give the listener a moment to establish the
+        initial state before enabling automatic saves.
       */
 
-      uploadCurrent();
+      setTimeout(() => {
+
+        initialLoadComplete = true;
+
+      }, 1000);
 
     })
 
