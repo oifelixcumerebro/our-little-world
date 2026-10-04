@@ -536,3 +536,9 @@ img,video{max-width:100%;height:auto}
   .install-app{animation:none!important}
   .floating-heart,.sparkle,.confetti-piece{display:none!important}
 }
+
+
+/* Persistent soundtrack bar */
+#soundtrackBar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:10000;width:min(720px,calc(100% - 28px));display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;background:#fffaf4ee;border:1px solid #ead9d2;box-shadow:0 12px 35px #4b304028;backdrop-filter:blur(12px)}
+.soundtrack-info{display:flex;align-items:center;gap:10px;min-width:0;flex:1}.soundtrack-note{font-size:1.5rem}.soundtrack-info b,.soundtrack-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.soundtrack-info small{opacity:.7;margin-top:2px}.soundtrack-controls{display:flex;gap:6px}.soundtrack-controls button,.soundtrack-close{border:0;background:transparent;min-width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:1rem}.soundtrack-controls button:hover,.soundtrack-close:hover{background:#f1e5df}.soundtrack-close{font-size:1.25rem;flex:0 0 auto}
+@media(max-width:650px){#soundtrackBar{bottom:10px;width:calc(100% - 18px);padding:10px}.soundtrack-controls button{min-width:34px;height:34px}}
