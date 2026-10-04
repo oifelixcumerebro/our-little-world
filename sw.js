@@ -1,4 +1,4 @@
-const CACHE = 'little-world-v21-app';
+const CACHE = 'little-world-v24-app';
 
 const CORE = [
   './',
