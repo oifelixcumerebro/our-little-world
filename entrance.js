@@ -1,6 +1,6 @@
 /* Safe standalone entrance screen controller. */
 (function(){
-  function hideSite(){
+  function forceEntrance(){
     const app=document.getElementById("app");
     const tools=document.querySelector(".app-tools");
     const hero=document.querySelector(".hero");
@@ -28,16 +28,20 @@
   window.openLetter=revealWorld;
 
   const style=document.createElement("style");
+  style.id="entranceRuntimeStyle";
   style.textContent=
     ".app.entrance-active main>*:not(#welcome),.app.entrance-active footer{display:none!important}"+
     ".app.entrance-active #welcome{display:none!important}"+
-    ".app.entrance-active .hero{min-height:calc(100vh - 30px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}"+
+    ".app.entrance-active .hero{min-height:calc(100vh - 30px);box-sizing:border-box;display:flex!important;flex-direction:column;justify-content:center}"+
     ".app.entrance-active .app-tools{visibility:hidden!important;pointer-events:none!important}";
   document.head.appendChild(style);
 
   function start(){
-    hideSite();
+    forceEntrance();
+    const btn=document.getElementById("openWorldBtn");
+    if(btn) btn.onclick=revealWorld;
   }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start);
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start,{once:true});
   else start();
 })();
