@@ -1,13 +1,23 @@
-/* Safe standalone entrance screen controller — keeps the main app logic untouched. */
+/* Safe standalone entrance screen controller. */
 (function(){
-  function revealWorld(){
-    const hero=document.querySelector(".hero");
-    const welcome=document.getElementById("welcome");
-    const tools=document.querySelector(".app-tools");
+  function hideSite(){
     const app=document.getElementById("app");
-    if(hero) hero.classList.add("entrance-complete");
-    if(tools) tools.classList.remove("entrance-hidden");
+    const tools=document.querySelector(".app-tools");
+    const hero=document.querySelector(".hero");
+    if(!app) return;
+    app.classList.add("entrance-active");
+    if(tools) tools.style.visibility="hidden";
+    if(hero) hero.style.display="flex";
+  }
+
+  function revealWorld(){
+    const app=document.getElementById("app");
+    const hero=document.querySelector(".hero");
+    const tools=document.querySelector(".app-tools");
+    const welcome=document.getElementById("welcome");
     if(app) app.classList.remove("entrance-active");
+    if(tools) tools.style.visibility="";
+    if(hero) hero.style.display="none";
     if(welcome){
       welcome.classList.remove("hidden");
       welcome.setAttribute("tabindex","-1");
@@ -19,15 +29,15 @@
 
   const style=document.createElement("style");
   style.textContent=
-    ".entrance-hidden{visibility:hidden;pointer-events:none}"+
-    ".app.entrance-active main>*:not(#welcome),.app.entrance-active footer{visibility:hidden;pointer-events:none}"+
-    ".hero.entrance-complete{display:none}"+
-    ".hero:not(.entrance-complete){min-height:calc(100vh - 30px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}"+
-    ".hero:not(.entrance-complete) .scroll-note{margin-top:30px}";
+    ".app.entrance-active main>*:not(#welcome),.app.entrance-active footer{display:none!important}"+
+    ".app.entrance-active #welcome{display:none!important}"+
+    ".app.entrance-active .hero{min-height:calc(100vh - 30px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}"+
+    ".app.entrance-active .app-tools{visibility:hidden!important;pointer-events:none!important}";
   document.head.appendChild(style);
 
-  document.addEventListener("DOMContentLoaded",()=>{
-    document.querySelector(".app-tools")?.classList.add("entrance-hidden");
-    document.getElementById("app")?.classList.add("entrance-active");
-  });
+  function start(){
+    hideSite();
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start);
+  else start();
 })();
