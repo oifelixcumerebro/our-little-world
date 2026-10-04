@@ -317,6 +317,15 @@ function widgetRecipe(){const a=data().kitchen||[];return a.length?a[Math.floor(
 function widgetMovie(){const a=data().watchlist||[];return a.length?a[Math.floor(Date.now()/86400000)%a.length]:null;}
 function widgetMessage(){const a=["Distance is temporary. Us is not. ♡","Somewhere in Baku, your girl is thinking about you. 🌙","Today's tiny mission: send each other one completely random photo. 📸","You are still my favourite notification. 💌","One day, June 2027 won't be a countdown anymore. It'll just be Tuesday. ♡","Different cities. Same little world. 🌍"];return a[Math.floor(Date.now()/86400000)%a.length];}
 function widgetCard(icon,title,body){return \`<article class="widget-card"><div class="widget-icon">\${icon}</div><div class="widget-body"><span class="widget-label">\${title}</span>\${body}</div></article>\`;}
+function renderLockWidgets(){
+  const daysEl=document.getElementById("lockDays");
+  const timesEl=document.getElementById("lockTimes");
+  const noteEl=document.getElementById("lockNote");
+  if(daysEl) daysEl.textContent=widgetDaysUntil();
+  if(timesEl) timesEl.textContent="Lusaka "+widgetTime("Africa/Lusaka")+" · Baku "+widgetTime("Asia/Baku");
+  if(noteEl) noteEl.textContent=widgetMessage();
+}
+
 function renderWidgets(){
   const grid=document.getElementById("widgetGrid");if(!grid)return;
   const memory=widgetMemory(),song=widgetSong(),recipe=widgetRecipe(),movie=widgetMovie(),days=widgetDaysUntil(),reunion=localStorage.getItem("aliceD_reunion");
@@ -333,7 +342,7 @@ function renderWidgets(){
    +widgetCard("💕","OUR LITTLE CHECK-IN",\`<p class="widget-quote">Still choosing each other, one ordinary day at a time. ♡</p><button class="mini widget-action" onclick="showPanel('walk')">Ask us a question ✦</button>\`);
   const section=document.getElementById("todayWidgets");if(section&&!section.dataset.revealed){section.dataset.revealed="1";requestAnimationFrame(()=>section.classList.add("visible"))}
 }
-function initWidgets(){renderWidgets();if(window.__aliceD_widgetTimer)clearInterval(window.__aliceD_widgetTimer);window.__aliceD_widgetTimer=setInterval(renderWidgets,30000);}
+function initWidgets(){renderWidgets();renderLockWidgets();if(window.__aliceD_widgetTimer)clearInterval(window.__aliceD_widgetTimer);window.__aliceD_widgetTimer=setInterval(()=>{renderWidgets();renderLockWidgets()},60000);}
 function refreshWidgets(){renderWidgets();toast("Widgets refreshed ✨");}
 
 
