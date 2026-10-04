@@ -603,3 +603,117 @@ footer p{color:#fff8ed}.footer-secret{color:#fff1d8}.footer-secret:hover{color:#
 .surprise-strip>div{background:linear-gradient(135deg,#fffdf8,#fff2df,#eef7f6)}
 .tape{background:#e7b95c66}
 @media (hover:none),(pointer:coarse){body{background:#fffaf3}body:after{display:none}}
+
+
+/* V23 — bolder romantic redesign: brighter, richer, less pastel */
+:root{
+  --love:#b83f5a;
+  --love2:#e85d6f;
+  --navy2:#243b5a;
+  --blue2:#4f91b8;
+  --gold2:#e2ad45;
+  --teal2:#3fa892;
+  --cream2:#fff8ea;
+  --ink2:#263244;
+}
+body{
+  color:var(--ink2);
+  background:
+    radial-gradient(circle at 5% 8%,#ffd66b 0 3%,transparent 18%),
+    radial-gradient(circle at 96% 12%,#77c9bd 0 3%,transparent 18%),
+    radial-gradient(circle at 8% 88%,#f08a79 0 3%,transparent 19%),
+    radial-gradient(circle at 94% 86%,#8e82c7 0 3%,transparent 18%),
+    linear-gradient(135deg,#fff8ea 0%,#fffdf7 35%,#eef7f5 68%,#f3effa 100%);
+}
+body:before{opacity:.07}
+.hero{
+  background:linear-gradient(135deg,#fff8eaee,#ffffffd9,#eef7f5dd);
+  border-radius:34px;
+  box-shadow:0 20px 55px #243b5a18;
+}
+.hero h1{
+  background:linear-gradient(90deg,#b83f5a 0%,#243b5a 35%,#e85d6f 65%,#e2ad45 85%,#b83f5a 100%);
+  background-size:250% auto;
+}
+.tiny,.eyebrow{color:var(--love)}
+.subtitle{color:#526174}
+.primary{
+  background:linear-gradient(135deg,var(--love),var(--love2));
+  box-shadow:0 12px 28px #b83f5a40;
+}
+.ghost{
+  background:linear-gradient(135deg,#fffdf8,#eaf5f4);
+  color:var(--navy2);
+  border:1px solid #b9d6d0;
+}
+.rooms{padding-top:26px}
+.section-heading h2{color:var(--navy2)}
+.room{
+  border:1px solid #ffffff;
+  box-shadow:0 12px 28px #243b5a18;
+  color:var(--ink2);
+}
+.room:nth-child(5n+1){background:linear-gradient(145deg,#fffdf8,#ffe9df)}
+.room:nth-child(5n+2){background:linear-gradient(145deg,#fffdf8,#e8f5f8)}
+.room:nth-child(5n+3){background:linear-gradient(145deg,#fffdf8,#f0ebfa)}
+.room:nth-child(5n+4){background:linear-gradient(145deg,#fffdf8,#e6f6ef)}
+.room:nth-child(5n){background:linear-gradient(145deg,#fffdf8,#fff0ce)}
+.room span{
+  background:linear-gradient(135deg,#ffd9c9,#ffeebd);
+}
+.room:nth-child(5n+2) span{background:linear-gradient(135deg,#d8f0f5,#e9f4ff)}
+.room:nth-child(5n+3) span{background:linear-gradient(135deg,#e5def8,#f8e8ef)}
+.room:nth-child(5n+4) span{background:linear-gradient(135deg,#d8f2e9,#fff0cf)}
+.room:nth-child(5n) span{background:linear-gradient(135deg,#ffe8aa,#fff5df)}
+.room small{color:#596777}
+.paper,.panel{
+  background:linear-gradient(145deg,#fffdf9f2,#fff6edf2,#eff8f6ee);
+  border:1px solid #ffffff;
+  box-shadow:0 18px 45px #243b5a18;
+}
+.message{background:linear-gradient(135deg,#fff0d0,#ffe8e6,#e8f6f4)}
+.option{background:linear-gradient(135deg,#fff1e5,#eaf5f5);border-color:#d6d9d3}
+.count{color:var(--love)}
+.story{border-left-color:var(--gold2)}
+.recipe-card,.watch-card,.future-pin{box-shadow:0 12px 28px #243b5a18}
+.recipe-card,.watch-card{background:linear-gradient(145deg,#fffdf8,#fff0e5)}
+.recipe-placeholder,.pin-placeholder{background:linear-gradient(135deg,#ffe7b0,#dff3ef)}
+.watch-poster{background:linear-gradient(135deg,#dceef4,#f7e7ce)}
+.playlist-item{background:linear-gradient(135deg,#fff1df,#e5f5f1)}
+.edit-card{background:#fffdf9e8;border-color:#dfd5c9}
+.mini{background:#f2e8dc;color:var(--navy2);border-color:#d8cbbd}
+.city-card{background:linear-gradient(145deg,#fffdf8,#ffe9d4);box-shadow:0 12px 28px #243b5a15}
+.baku-city{background:linear-gradient(145deg,#fffdf8,#e6f4f7)}
+.distance-message{background:linear-gradient(135deg,#fff0d0,#e8f5f3)}
+.widgets-section{background:linear-gradient(145deg,#fffdf8ee,#fff1e8ee,#e8f6f3ee);box-shadow:0 18px 45px #243b5a18}
+.widget-card:nth-child(4n+1){background:linear-gradient(145deg,#fffdf8,#ffe9df)}
+.widget-card:nth-child(4n+2){background:linear-gradient(145deg,#fffdf8,#e8f5f8)}
+.widget-card:nth-child(4n+3){background:linear-gradient(145deg,#fffdf8,#f0ebfa)}
+.widget-card:nth-child(4n){background:linear-gradient(145deg,#fffdf8,#e6f6ef)}
+.widget-number{background:linear-gradient(90deg,#b83f5a,#e85d6f,#4f91b8,#e2ad45);-webkit-background-clip:text;background-clip:text;color:transparent}
+footer{
+  background:linear-gradient(135deg,#243b5a,#513b55,#8a3f52);
+  color:#fff8ea;
+}
+footer p{color:#fff8ea}
+.footer-secret{color:#ffe6a5}
+.tape{background:#e2ad4588}
+.secret button{color:var(--love)}
+@media(max-width:900px){
+  body{
+    background:
+      radial-gradient(circle at 0 0,#ffd66b 0 2%,transparent 22%),
+      radial-gradient(circle at 100% 0,#77c9bd 0 2%,transparent 22%),
+      radial-gradient(circle at 0 100%,#f08a79 0 2%,transparent 23%),
+      linear-gradient(145deg,#fff8ea,#fffdf7 48%,#edf7f5);
+  }
+  .hero{
+    background:linear-gradient(145deg,#fff8eaf5,#ffffffed,#edf7f5ed);
+    box-shadow:0 12px 32px #243b5a16;
+  }
+}
+@media(max-width:650px){
+  .hero{border-radius:0 0 28px 28px}
+  .room{box-shadow:0 8px 20px #243b5a18}
+  .paper,.panel{box-shadow:0 10px 26px #243b5a14}
+}
