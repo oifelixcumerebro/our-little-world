@@ -717,3 +717,42 @@ footer p{color:#fff8ea}
   .room{box-shadow:0 8px 20px #243b5a18}
   .paper,.panel{box-shadow:0 10px 26px #243b5a14}
 }
+
+
+/* V24 — keep decorative layers from blocking taps/clicks */
+body::before,
+body::after,
+.hero::before,
+.hero::after,
+.rooms::before,
+.rooms::after,
+.paper::before,
+.paper::after,
+.panel::before,
+.panel::after,
+.room::before,
+.room::after,
+.widgets-section::before,
+.widgets-section::after,
+footer::before,
+footer::after{
+  pointer-events:none !important;
+}
+button,
+a,
+input,
+textarea,
+select,
+.room,
+.primary,
+.ghost,
+.x,
+.close,
+.edit-card,
+.playlist-item,
+.recipe-card,
+.watch-card,
+.future-pin{
+  position:relative;
+  z-index:2;
+}
