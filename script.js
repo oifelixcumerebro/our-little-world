@@ -335,3 +335,7 @@ function renderWidgets(){
 }
 function initWidgets(){renderWidgets();if(window.__aliceD_widgetTimer)clearInterval(window.__aliceD_widgetTimer);window.__aliceD_widgetTimer=setInterval(renderWidgets,30000);}
 function refreshWidgets(){renderWidgets();toast("Widgets refreshed ✨");}
+
+
+/* Start widgets even when the app is already unlocked on this browser. */
+document.addEventListener("DOMContentLoaded",initWidgets);
