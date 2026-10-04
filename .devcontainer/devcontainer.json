@@ -1,0 +1,11 @@
+{
+  "name": "Our Little World",
+  "postStartCommand": "nohup python3 -m http.server 8000 --bind 0.0.0.0 >/tmp/our-little-world-server.log 2>&1 &",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Our Little World",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
