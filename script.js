@@ -97,7 +97,19 @@ function theListPanel(){
 function watchCard(x){return `<article class="watch-card"><div class="watch-poster">${x.photo?`<img src="${esc(x.photo)}" alt="${esc(x.title||'Poster')}">`:'🎬'}</div><div><div class="recipe-meta">${esc(x.type||'Movie')} · ${esc(x.status||'Want to watch')}</div><h3>${esc(x.title||'Untitled')}</h3>${x.year?`<small>${esc(x.year)}</small>`:''}${x.note?`<p>${esc(x.note)}</p>`:''}${x.link?`<a class="mini" href="${esc(x.link)}" target="_blank" rel="noopener">🔗 Where to watch / info</a>`:''}</div></article>`}
 function memoryPanel(){
   const d=data();
-  const memories=d.memories||[];
+  const fallback=[
+    {title:"my girl ♡",caption:"my girl ♡",src:"assets/alice-1.jpg",kind:"image"},
+    {title:"my love ♡",caption:"my love ♡",src:"assets/d-1.jpg",kind:"image"},
+    {title:"one of my favourite us moments",caption:"one of my favourite us moments",src:"assets/memory-1.jpg",kind:"image"},
+    {title:"us. just us. ♡",caption:"us. just us. ♡",src:"assets/us-1.jpg",kind:"image"},
+    {title:"a little memory 🎥",caption:"a little memory 🎥",src:"assets/memory-video-1.mp4",kind:"video"},
+    {title:"another little memory 🎥",caption:"another little memory 🎥",src:"assets/memory-video-2.mp4",kind:"video"}
+  ];
+  const memories=(d.memories&&d.memories.length?d.memories:fallback).map(m=>{
+    const src=String(m.src||"");
+    const fixedSrc=(src.startsWith("assets/")||src.startsWith("data:")||src.startsWith("blob:")||src.startsWith("http"))?src:"assets/"+src.replace(/^\/+/,"");
+    return {...m,src:fixedSrc};
+  });
 
   return `
     <p class="eyebrow">THE SCRAPBOOK WALL</p>
@@ -110,40 +122,20 @@ function memoryPanel(){
       </button>
     </div>
 
-    ${
-      memories.length
-      ? `
-        <div class="memory-count">
-          ${memories.length} little ${memories.length===1?'memory':'memories'} ♡
-        </div>
-
-        <div class="memory-grid">
-          ${memories.map((m,i)=>`
-            <figure class="polaroid memory-card">
-              ${
-                m.kind==="video"
-                ? `<video controls playsinline preload="metadata" src="${esc(m.src)}"></video>`
-                : `<img src="${esc(m.src)}" alt="${esc(m.title||'Our memory')}">`
-              }
-              <figcaption>
-                <strong>${esc(m.title||'A little memory ♡')}</strong>
-                <span>${esc(m.caption||'')}</span>
-              </figcaption>
-            </figure>
-          `).join("")}
-        </div>
-      `
-      : `
-        <div class="memory-empty">
-          <div>📸</div>
-          <h3>Our scrapbook is waiting...</h3>
-          <p>Add your first little moment together. ♡</p>
-          <button class="primary" onclick="showPanel('edit');setTimeout(()=>editSection('memories'),50)">
-            ＋ Add our first memory
-          </button>
-        </div>
-      `
-    }
+    <div class="memory-count">${memories.length} little ${memories.length===1?'memory':'memories'} ♡</div>
+    <div class="memory-grid">
+      ${memories.map((m,i)=>`
+        <figure class="polaroid memory-card">
+          ${m.kind==="video"
+            ? `<video controls playsinline preload="metadata" src="${esc(m.src)}"></video>`
+            : `<img src="${esc(m.src)}" alt="${esc(m.title||'Our memory')}" loading="lazy">`}
+          <figcaption>
+            <strong>${esc(m.title||'A little memory ♡')}</strong>
+            <span>${esc(m.caption||'')}</span>
+          </figcaption>
+        </figure>
+      `).join("")}
+    </div>
   `;
 }
 function carePanel(){const d=data();return `<p class="eyebrow">JUST FOR YOU</p><h2>A Little Care Package 🎁</h2><div class="message">🎧 Your shared soundtrack<br>📸 Our memories<br>💌 Love letters<br>🎟️ Love coupons<br>🍳 Future cooking dates</div><div class="option-grid"><button class="option" onclick="coupon('One free cuddle')">🎟️ Cuddle coupon</button><button class="option" onclick="coupon('One forehead kiss')">🎟️ Forehead kiss</button><button class="option" onclick="coupon('One date planned by Alice')">🎟️ Alice plans the date</button></div><div id="couponResult"></div>${d.coupons.length?'<h3>Saved coupons</h3>'+d.coupons.map(x=>`<div class="message">🎟️ ${esc(x)}</div>`).join(""):''}`}
