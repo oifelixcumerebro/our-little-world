@@ -83,3 +83,186 @@ footer{background:linear-gradient(135deg,#f8e8e5,#f0e7ff,#e7f6f2);background-siz
 
 /* Our Future Pinterest-style board */
 .future-board-tools{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.future-category{margin:26px 0}.future-category-head{display:flex;align-items:center;gap:9px;margin-bottom:12px}.future-category-head h3{margin:0}.future-category-head small{margin-left:auto;opacity:.65}.future-category-head span{font-size:1.35rem}.pin-board{columns:3 240px;column-gap:16px}.future-pin{break-inside:avoid;margin:0 0 16px;background:rgba(255,255,255,.78);border:1px solid #ead9d2;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(75,45,40,.07);transition:transform .2s ease,box-shadow .2s ease}.future-pin:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(75,45,40,.12)}.future-pin>img,.future-pin>video{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;background:#f5eee9}.pin-placeholder{min-height:150px;display:grid;place-items:center;font-size:3rem;background:linear-gradient(135deg,#fff5f0,#f7edf8)}.pin-body{padding:14px}.pin-body h4{margin:5px 0 7px;font-size:1.05rem}.pin-body p{margin:0 0 10px;line-height:1.5}.pin-tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6}.pin-link{display:inline-block;text-decoration:none}.future-editor .current-photo img,.future-editor .current-photo video{max-width:100%;max-height:220px;border-radius:12px;margin-top:8px;display:block}.future-editor select{width:100%;padding:12px;border:1px solid #ead9d2;border-radius:12px;background:#fff;margin:5px 0 12px}.future-editor label{display:block;font-size:.82rem;font-weight:700;margin-top:10px}.future-category+.future-category{border-top:1px dashed #ead9d2;padding-top:18px}
+
+
+/* V19 — fresh, vibrant, playful refresh */
+:root{
+  --fresh-pink:#ff7eb6;
+  --fresh-coral:#ff9a8b;
+  --fresh-yellow:#ffd86b;
+  --fresh-lilac:#b99cff;
+  --fresh-blue:#73c8ff;
+  --fresh-mint:#70dfc1;
+  --fresh-ink:#3b2c3b;
+}
+body{
+  background:
+    radial-gradient(circle at 8% 12%,#ffd86b55 0 5%,transparent 22%),
+    radial-gradient(circle at 92% 18%,#73c8ff45 0 6%,transparent 24%),
+    radial-gradient(circle at 18% 82%,#ff7eb640 0 5%,transparent 23%),
+    radial-gradient(circle at 82% 88%,#b99cff45 0 6%,transparent 25%),
+    linear-gradient(-45deg,#fff8ec,#fff0f7,#eef9ff,#f5efff,#f1fff9);
+  background-size:auto,auto,auto,auto,500% 500%;
+  animation:gradientDance 18s ease infinite;
+}
+body:after{
+  background:
+    radial-gradient(circle at 12% 30%,#ff7eb625 0 0  ,transparent 24%),
+    radial-gradient(circle at 78% 65%,#70dfc125 0 0,transparent 26%);
+  animation:aurora 12s ease-in-out infinite alternate;
+}
+.hero{
+  padding-top:82px;
+  padding-bottom:55px;
+}
+.hero:before{
+  content:"";
+  position:absolute;
+  width:190px;height:190px;
+  border-radius:50%;
+  left:-70px;top:70px;
+  background:linear-gradient(135deg,#ffd86b66,#ff7eb600);
+  filter:blur(4px);
+  animation:blobFloat 7s ease-in-out infinite;
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:160px;height:160px;
+  border-radius:48% 52% 60% 40%;
+  right:-55px;bottom:25px;
+  background:linear-gradient(135deg,#73c8ff55,#b99cff22);
+  filter:blur(3px);
+  animation:blobFloat 8s ease-in-out infinite reverse;
+}
+.hero h1{
+  text-shadow:0 8px 28px #b9576115;
+  letter-spacing:-1.5px;
+}
+.subtitle{
+  font-size:1.05rem;
+}
+.hero-buttons .primary{
+  background:linear-gradient(135deg,#ff6fae,#ff8d8d);
+  box-shadow:0 12px 25px #ff6fae35;
+}
+.hero-buttons .ghost{
+  background:linear-gradient(135deg,#ffffffdd,#f4ecffdd);
+  border-color:#d9c7ff;
+  box-shadow:0 8px 20px #8d4f8f12;
+}
+.rooms{
+  padding-top:22px;
+}
+.section-heading{
+  animation:sectionFloat 5s ease-in-out infinite;
+}
+.section-heading h2{
+  font-size:2.35rem;
+}
+.grid{
+  gap:18px;
+}
+.room{
+  min-height:168px;
+  border:1px solid #ffffffcc;
+  background:linear-gradient(145deg,#ffffffee,#fff6fb);
+  box-shadow:0 10px 25px #8d4f8f12,3px 5px 0 #f1e3de;
+  backdrop-filter:blur(8px);
+}
+.room:nth-child(3n){
+  background:linear-gradient(145deg,#ffffffee,#f2f9ff);
+}
+.room:nth-child(4n){
+  background:linear-gradient(145deg,#ffffffee,#f7f1ff);
+}
+.room:nth-child(5n){
+  background:linear-gradient(145deg,#ffffffee,#f0fff9);
+}
+.room span{
+  width:52px;height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:linear-gradient(135deg,#fff0f6,#f1eaff);
+  box-shadow:0 8px 18px #8d4f8f14;
+}
+.room:nth-child(3n) span{background:linear-gradient(135deg,#fff7d9,#e9f7ff)}
+.room:nth-child(4n) span{background:linear-gradient(135deg,#ffe7ee,#eee4ff)}
+.room:nth-child(5n) span{background:linear-gradient(135deg,#e8fff8,#fff5df)}
+.room b{
+  margin-top:13px;
+}
+.room small{
+  line-height:1.45;
+}
+.paper,.panel{
+  border:1px solid #ffffffdd;
+  background:linear-gradient(145deg,#fffefaee,#fff5f9ee,#f5f1ffee);
+  box-shadow:0 18px 45px #8d4f8f12,8px 12px 0 #efdfe0;
+  backdrop-filter:blur(10px);
+}
+.panel{
+  min-height:250px;
+}
+.paper h2,.panel h2{
+  font-size:2rem;
+}
+.message{
+  background:linear-gradient(135deg,#fff4d9,#ffeaf3,#eef6ff);
+  border:1px solid #ffffff;
+  box-shadow:0 10px 25px #8d4f8f10;
+}
+.option{
+  background:linear-gradient(135deg,#fff3f7,#f3edff);
+  border-color:#e3d5f4;
+  transition:.25s ease;
+}
+.option:hover{
+  transform:translateY(-3px) scale(1.015);
+  box-shadow:0 10px 22px #8d4f8f14;
+}
+.memory-grid{
+  gap:26px;
+}
+.polaroid{
+  border-radius:4px;
+  box-shadow:0 14px 30px #5b413420;
+  transition:transform .35s ease,box-shadow .35s ease;
+}
+.polaroid:hover{
+  transform:translateY(-9px) rotate(0deg) scale(1.025);
+  box-shadow:0 22px 40px #5b413430;
+}
+.surprise-strip>div{
+  border:1px solid #ffffff;
+  box-shadow:0 15px 35px #8d4f8f14;
+}
+.secret button{
+  transition:transform .25s ease;
+}
+.secret button:hover{
+  transform:scale(1.18) rotate(-8deg);
+}
+footer{
+  margin-top:20px;
+  border-radius:38px 38px 0 0;
+  box-shadow:0 -12px 35px #8d4f8f0d;
+}
+@keyframes blobFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(25px,-18px) scale(1.12)}
+}
+@keyframes sectionFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+@media(max-width:650px){
+  .hero{padding-top:65px}
+  .hero h1{letter-spacing:-.5px}
+  .room{min-height:150px;padding:20px 13px}
+  .room span{width:46px;height:46px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero:before,.hero:after,.section-heading{animation:none!important}
+}
