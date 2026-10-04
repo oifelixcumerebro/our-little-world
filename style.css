@@ -294,3 +294,9 @@ footer{animation:none!important;background-size:100% 100%!important}
 @media (prefers-reduced-motion: no-preference){
   .room:hover,.polaroid:hover,.widget-card:hover{transition:transform .18s ease,box-shadow .18s ease}
 }
+
+/* Lock-screen live widgets */
+.lock-widgets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 4px;width:100%}
+.lock-widget{padding:10px 7px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid rgba(255,126,182,.18);display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.lock-widget span{font-size:1.05rem}.lock-widget b{font-size:.9rem;line-height:1.15;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis}.lock-widget small{font-size:.65rem;opacity:.68;text-align:center}
+@media(max-width:520px){.lock-widgets{grid-template-columns:1fr 1fr}.lock-widget:last-child{grid-column:1/-1}}
