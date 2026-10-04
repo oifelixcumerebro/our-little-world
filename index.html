@@ -8,6 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ff6fae">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<style id="entranceBootStyle">.app.entrance-active main>*:not(#welcome),.app.entrance-active footer{display:none!important}.app.entrance-active #welcome{display:none!important}.app.entrance-active .app-tools{visibility:hidden!important;pointer-events:none!important}</style>
 </head>
 <body>
 <div id="lock" class="lock-screen hidden">
@@ -27,7 +28,7 @@
   </div>
 </div>
 
-<div id="app" class="app">
+<div id="app" class="app entrance-active">
 <div class="app-tools">
   <button id="installAppBtn" class="install-app hidden" type="button">📱 Install our app</button>
   <button id="notifyAppBtn" class="install-app hidden" type="button">💌 Turn on love notifications</button>
