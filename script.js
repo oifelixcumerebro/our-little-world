@@ -363,7 +363,7 @@ function widgetSong(){const a=data().playlist||[];return a.length?a[Math.floor(D
 function widgetRecipe(){const a=data().kitchen||[];return a.length?a[Math.floor(Date.now()/86400000)%a.length]:null;}
 function widgetMovie(){const a=data().watchlist||[];return a.length?a[Math.floor(Date.now()/86400000)%a.length]:null;}
 function widgetMessage(){const a=["Distance is temporary. Us is not. ♡","Somewhere in Baku, your girl is thinking about you. 🌙","Today's tiny mission: send each other one completely random photo. 📸","You are still my favourite notification. 💌","One day, June 2027 won't be a countdown anymore. It'll just be Tuesday. ♡","Different cities. Same little world. 🌍"];return a[Math.floor(Date.now()/86400000)%a.length];}
-function widgetCard(icon,title,body){return \`<article class="widget-card"><div class="widget-icon">\${icon}</div><div class="widget-body"><span class="widget-label">\${title}</span>\${body}</div></article>\`;}
+function widgetCard(icon,title,body){return `<article class="widget-card"><div class="widget-icon">${icon}</div><div class="widget-body"><span class="widget-label">${title}</span>${body}</div></article>`;}
 function renderLockWidgets(){
   const daysEl=document.getElementById("lockDays");
   const timesEl=document.getElementById("lockTimes");
@@ -379,14 +379,14 @@ function renderWidgets(){
   const targetLabel=reunion?new Date(reunion+"T12:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"}):"June 2027";
   const progress=Math.min(100,Math.max(3,100-(days/300*100)));
   grid.innerHTML=
-    widgetCard("🌙","UNTIL WE MEET",\`<strong class="widget-number">\${days}</strong><small class="widget-sub">days to \${esc(targetLabel)}</small><div class="widget-progress"><i style="width:\${progress}%"></i></div>\`)
-   +widgetCard("🌍","LUSAKA ↔ BAKU",\`<div class="time-pair"><span><b>\${widgetTime("Africa/Lusaka")}</b><small>Lusaka · \${widgetDate("Africa/Lusaka")}</small></span><em>♡</em><span><b>\${widgetTime("Asia/Baku")}</b><small>Baku · \${widgetDate("Asia/Baku")}</small></span></div>\`)
-   +widgetCard("💌","TODAY'S LITTLE NOTE",\`<p class="widget-quote">“\${esc(widgetMessage())}”</p>\`)
-   +widgetCard("📸","MEMORY OF THE DAY",memory?\`<div class="widget-media">\${memory.kind==="video"?\`<video muted playsinline preload="metadata" src="\${esc(memory.src)}"></video>\`:\`<img src="\${esc(memory.src)}" alt="\${esc(memory.title||"Our memory")}">\`}</div><b>\${esc(memory.caption||memory.title||"A little memory ♡")}</b>\`:\`<p>Add your first memory in Our Memories. ♡</p>\`)
-   +widgetCard("🎵","TODAY'S SOUNDTRACK",song?\`<b>\${esc(song.name)}</b><button class="mini widget-action" onclick="showPanel('playlist')">Open playlist ♫</button>\`:\`<p>Add songs to Our Little Playlist.</p>\`)
-   +widgetCard("🍳","WHAT SHOULD WE COOK?",recipe?\`<b>\${esc(recipe.name||recipe.title||"A recipe waiting for us")}</b><button class="mini widget-action" onclick="showPanel('kitchen')">Open D's Kitchen</button>\`:\`<p>No recipes yet — add one to D's Kitchen.</p>\`)
-   +widgetCard("🎬","MOVIE NIGHT?",movie?\`<b>\${esc(movie.title||movie.name||"Something from The List")}</b><button class="mini widget-action" onclick="showPanel('thelist')">Open The List</button>\`:\`<p>Pick something for movie night in The List.</p>\`)
-   +widgetCard("💕","OUR LITTLE CHECK-IN",\`<p class="widget-quote">Still choosing each other, one ordinary day at a time. ♡</p><button class="mini widget-action" onclick="showPanel('walk')">Ask us a question ✦</button>\`);
+    widgetCard("🌙","UNTIL WE MEET",`<strong class="widget-number">${days}</strong><small class="widget-sub">days to ${esc(targetLabel)}</small><div class="widget-progress"><i style="width:${progress}%"></i></div>`)
+   +widgetCard("🌍","LUSAKA ↔ BAKU",`<div class="time-pair"><span><b>${widgetTime("Africa/Lusaka")}</b><small>Lusaka · ${widgetDate("Africa/Lusaka")}</small></span><em>♡</em><span><b>${widgetTime("Asia/Baku")}</b><small>Baku · ${widgetDate("Asia/Baku")}</small></span></div>`)
+   +widgetCard("💌","TODAY'S LITTLE NOTE",`<p class="widget-quote">“${esc(widgetMessage())}”</p>`)
+   +widgetCard("📸","MEMORY OF THE DAY",memory?`<div class="widget-media">${memory.kind==="video"?`<video muted playsinline preload="metadata" src="${esc(memory.src)}"></video>`:`<img src="${esc(memory.src)}" alt="${esc(memory.title||"Our memory")}">`}</div><b>${esc(memory.caption||memory.title||"A little memory ♡")}</b>`:`<p>Add your first memory in Our Memories. ♡</p>`)
+   +widgetCard("🎵","TODAY'S SOUNDTRACK",song?`<b>${esc(song.name)}</b><button class="mini widget-action" onclick="showPanel('playlist')">Open playlist ♫</button>`:`<p>Add songs to Our Little Playlist.</p>`)
+   +widgetCard("🍳","WHAT SHOULD WE COOK?",recipe?`<b>${esc(recipe.name||recipe.title||"A recipe waiting for us")}</b><button class="mini widget-action" onclick="showPanel('kitchen')">Open D's Kitchen</button>`:`<p>No recipes yet — add one to D's Kitchen.</p>`)
+   +widgetCard("🎬","MOVIE NIGHT?",movie?`<b>${esc(movie.title||movie.name||"Something from The List")}</b><button class="mini widget-action" onclick="showPanel('thelist')">Open The List</button>`:`<p>Pick something for movie night in The List.</p>`)
+   +widgetCard("💕","OUR LITTLE CHECK-IN",`<p class="widget-quote">Still choosing each other, one ordinary day at a time. ♡</p><button class="mini widget-action" onclick="showPanel('walk')">Ask us a question ✦</button>`);
   const section=document.getElementById("todayWidgets");if(section&&!section.dataset.revealed){section.dataset.revealed="1";requestAnimationFrame(()=>section.classList.add("visible"))}
 }
 function initWidgets(){renderWidgets();renderLockWidgets();if(window.__aliceD_widgetTimer)clearInterval(window.__aliceD_widgetTimer);window.__aliceD_widgetTimer=setInterval(()=>{renderWidgets();renderLockWidgets()},60000);}
