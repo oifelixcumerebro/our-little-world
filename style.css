@@ -303,3 +303,236 @@ footer{animation:none!important;background-size:100% 100%!important}
 
 /* App tools */
 .app-tools{position:fixed;top:14px;right:14px;z-index:30;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.app-tools .install-app{position:static}.app-tools .install-app:not(.hidden){display:inline-flex}@media(max-width:600px){.app-tools{left:12px;right:12px;top:10px}.app-tools .install-app{flex:1;justify-content:center}}
+
+
+/* =========================================================
+   RESPONSIVE + PERFORMANCE UPDATE — October 2026
+   Shared by website, Android and iPhone builds
+   ========================================================= */
+
+/* Keep the page light: remove expensive effects on touch/mobile devices. */
+@media (hover:none), (pointer:coarse), (max-width:900px){
+  html{scroll-behavior:auto}
+  body{
+    animation:none!important;
+    background-size:auto!important;
+  }
+  body:before,body:after{
+    animation:none!important;
+    filter:none!important;
+  }
+  .hero,.hero:before,.hero:after,
+  .room,.room:before,.room:after,
+  .paper,.panel,.section-heading,
+  .surprise-strip>div,.widget-card,
+  footer,.lock-card{
+    animation:none!important;
+  }
+  .room,.paper,.panel,.widget-card,.polaroid{
+    backdrop-filter:none!important;
+  }
+  .room:hover,.polaroid:hover,.widget-card:hover{
+    transform:none!important;
+  }
+  .hero-buttons .primary:after,.hero-buttons .ghost:after{
+    display:none!important;
+  }
+}
+
+/* Prevent horizontal overflow on every screen size. */
+html,body,#app{max-width:100%;overflow-x:hidden}
+img,video{max-width:100%;height:auto}
+
+/* Large screens */
+@media (min-width:1200px){
+  .hero{max-width:1050px;padding-left:40px;padding-right:40px}
+  .rooms{max-width:1180px}
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .widgets-section{width:min(1180px,92%)}
+}
+
+/* Tablets and smaller laptops */
+@media (max-width:900px){
+  .hero{
+    width:100%;
+    margin:12px auto 10px;
+    padding:58px 24px 34px;
+  }
+  .hero h1{font-size:clamp(2.7rem,9vw,4.8rem)}
+  .subtitle{max-width:680px}
+  .rooms{padding:8px 18px 35px}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .room{min-height:145px;padding:20px 12px}
+  .paper,.panel{width:calc(100% - 36px);margin-left:auto;margin-right:auto}
+  .widgets-section{backdrop-filter:none}
+}
+
+/* Phones */
+@media (max-width:650px){
+  .hero{
+    margin:0 auto;
+    padding:54px 16px 30px;
+  }
+  .hero h1{
+    font-size:clamp(2.45rem,12vw,3.8rem);
+    line-height:.98;
+    margin:10px 0 16px;
+  }
+  .subtitle{
+    font-size:.96rem;
+    line-height:1.6;
+    padding:0 4px;
+  }
+  .hero-buttons{
+    width:100%;
+    flex-direction:column;
+    align-items:stretch;
+    gap:9px;
+  }
+  .hero-buttons .primary,.hero-buttons .ghost{
+    width:100%;
+    min-height:48px;
+  }
+  .scroll-note{margin-top:20px}
+
+  .rooms{
+    width:100%;
+    padding:10px 12px 30px;
+  }
+  .section-heading{margin-bottom:20px}
+  .section-heading h2{font-size:1.9rem}
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  .room{
+    min-height:140px;
+    padding:17px 11px;
+    border-radius:15px;
+  }
+  .room span{
+    width:42px;
+    height:42px;
+    font-size:1.55rem;
+    margin-bottom:0;
+  }
+  .room b{
+    font-size:.98rem;
+    margin-top:10px;
+  }
+  .room small{
+    font-size:.78rem;
+  }
+
+  .paper,.panel{
+    width:calc(100% - 24px);
+    margin:12px auto 30px;
+    padding:27px 18px;
+    border-radius:18px;
+    box-shadow:0 8px 22px #8d4f8f10;
+  }
+  .paper h2,.panel h2{font-size:1.65rem}
+  .paper p,.panel p{line-height:1.65}
+
+  .memory-grid,.recipe-grid,.watch-grid{
+    grid-template-columns:1fr;
+    gap:15px;
+  }
+  .polaroid{transform:none!important}
+  .recipe-photo{height:175px}
+  .watch-card{grid-template-columns:82px 1fr}
+  .watch-poster{height:115px}
+
+  .distance-map{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .sky-bridge{
+    min-height:58px;
+  }
+  .sky-bridge small{
+    top:48px;
+    width:100%;
+  }
+  .two-column-notes{grid-template-columns:1fr}
+
+  .surprise-strip{
+    width:100%;
+    padding:0 12px;
+  }
+  .secret{padding-bottom:45px}
+  footer{border-radius:24px 24px 0 0;padding:28px 16px}
+
+  .widgets-section{
+    width:calc(100% - 24px);
+    padding:17px 14px;
+    border-radius:22px;
+    margin-bottom:24px;
+  }
+  .widgets-heading h2{font-size:1.5rem}
+  .widget-grid{grid-template-columns:1fr;gap:10px}
+  .widget-card{
+    min-height:110px;
+    padding:15px;
+  }
+  .widget-number{font-size:2.4rem}
+  .time-pair b{font-size:1.05rem}
+  .widget-media{height:85px}
+
+  .lock-screen.hidden{
+    padding:14px;
+  }
+  .lock-card{
+    width:100%;
+    padding:32px 18px;
+    box-shadow:5px 8px 0 #efdfe0;
+  }
+  .lock-card h1{font-size:1.9rem}
+  .lock-widgets{
+    grid-template-columns:1fr 1fr;
+  }
+  .lock-widget:last-child{grid-column:1/-1}
+
+  .app-tools{
+    position:relative;
+    top:auto;
+    right:auto;
+    left:auto;
+    width:100%;
+    padding:8px 12px 0;
+    justify-content:center;
+  }
+  .app-tools .install-app{
+    flex:1 1 auto;
+  }
+}
+
+/* Very small phones */
+@media (max-width:380px){
+  .hero{padding-left:12px;padding-right:12px}
+  .hero h1{font-size:2.35rem}
+  .grid{grid-template-columns:1fr}
+  .room{min-height:125px}
+  .paper,.panel{width:calc(100% - 18px);padding:23px 15px}
+  .widgets-section{width:calc(100% - 18px)}
+  .widget-card{padding:13px}
+}
+
+/* Better touch targets */
+@media (hover:none), (pointer:coarse){
+  button,.room,.option,.footer-secret,.forgot{
+    -webkit-tap-highlight-color:transparent;
+  }
+  button,.room,.option{
+    touch-action:manipulation;
+  }
+  .room,.option,.primary,.ghost{
+    min-height:44px;
+  }
+}
+
+/* Do not animate the install controls or floating decorative elements on mobile. */
+@media (max-width:900px){
+  .install-app{animation:none!important}
+  .floating-heart,.sparkle,.confetti-piece{display:none!important}
+}
