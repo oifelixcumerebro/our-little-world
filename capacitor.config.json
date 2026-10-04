@@ -1,0 +1,8 @@
+{
+  "appId": "com.aliceanddavid.ourlittleworld",
+  "appName": "Our Little World",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
