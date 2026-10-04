@@ -4,8 +4,10 @@
     const hero=document.querySelector(".hero");
     const welcome=document.getElementById("welcome");
     const tools=document.querySelector(".app-tools");
+    const app=document.getElementById("app");
     if(hero) hero.classList.add("entrance-complete");
     if(tools) tools.classList.remove("entrance-hidden");
+    if(app) app.classList.remove("entrance-active");
     if(welcome){
       welcome.classList.remove("hidden");
       welcome.setAttribute("tabindex","-1");
@@ -18,6 +20,7 @@
   const style=document.createElement("style");
   style.textContent=
     ".entrance-hidden{visibility:hidden;pointer-events:none}"+
+    ".app.entrance-active main>*:not(#welcome),.app.entrance-active footer{visibility:hidden;pointer-events:none}"+
     ".hero.entrance-complete{display:none}"+
     ".hero:not(.entrance-complete){min-height:calc(100vh - 30px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}"+
     ".hero:not(.entrance-complete) .scroll-note{margin-top:30px}";
@@ -25,5 +28,6 @@
 
   document.addEventListener("DOMContentLoaded",()=>{
     document.querySelector(".app-tools")?.classList.add("entrance-hidden");
+    document.getElementById("app")?.classList.add("entrance-active");
   });
 })();
