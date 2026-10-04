@@ -202,60 +202,17 @@ function dateIdea(){const d=["Cook the same meal together on video call 🍳","P
 function coupon(x){const d=data();if(!d.coupons.includes(x)){d.coupons.push(x);saveData(d)}document.getElementById("couponResult").innerHTML=`<div class="message">🎟️ <b>OFFICIAL ALICE COUPON</b><br><br>${x}<br><br><small>Saved to your care package. No expiry. ♡</small></div>`}
 function saveDate(){const d=document.getElementById("reunionDate").value;if(!d)return;localStorage.setItem("aliceD_reunion",d);renderCountdown(d)}function renderCountdown(d){const target=new Date(d+"T12:00:00"),now=new Date(),ms=target-now,el=document.getElementById("countText");if(!el)return;if(ms<=0){el.innerHTML="YOU'RE HOME ❤️<small>No more counting. Just you.</small>";return}el.innerHTML=`${Math.ceil(ms/86400000)} days ♡<small>until our reunion · ${target.toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"})}</small>`}
 setInterval(()=>{const d=localStorage.getItem("aliceD_reunion");if(d&&document.getElementById("countText"))renderCountdown(d)},60000);function newSurprise(){document.getElementById("dailySurprise").textContent=surprises[Math.floor(Math.random()*surprises.length)]}function secretHeart(){document.getElementById("secretMessage").textContent="You found my secret. I love you, David. ❤️ — Alice"}
-let audioCtx=null,playing=false,timer=null,activeAudio=null;
-function toggleMusic(){
-  const btn=document.getElementById("musicBtn");
-  if(!btn) return;
-  const d=data();
-  if(Array.isArray(d.playlist) && d.playlist.length){ showPanel("playlist"); return; }
-  try{
-    const Ctx=window.AudioContext||window.webkitAudioContext;
-    if(!Ctx) throw new Error("AudioContext unavailable");
-    if(!audioCtx || audioCtx.state==="closed") audioCtx=new Ctx();
-    if(audioCtx.state==="suspended") audioCtx.resume();
-    if(playing){
-      clearInterval(timer); timer=null; playing=false;
-      btn.textContent="♫ Play our little soundtrack";
-      return;
-    }
-    const notes=[261.63,329.63,392,329.63,293.66,349.23,440,392]; let i=0;
-    const play=()=>{
-      if(!audioCtx || audioCtx.state==="closed") return;
-      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-      o.type="sine"; o.frequency.value=notes[i++%notes.length];
-      g.gain.setValueAtTime(.0001,audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.04,audioCtx.currentTime+.03);
-      g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.62);
-      o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+.65);
-    };
-    play(); timer=setInterval(play,700); playing=true;
-    btn.textContent="♫ Our little soundtrack is playing ♡";
-  }catch(e){
-    showMusicMessage("Tap here once more to start our little soundtrack ♡");
-  }
-}
-function showPlaylistPlayer(){
-  const d=data();
-  let old=document.getElementById("musicPlayer"); if(old)old.remove();
-  const box=document.createElement("div"); box.id="musicPlayer"; box.className="toast";
-  box.style.maxWidth="520px"; box.style.zIndex="9999";
-  box.innerHTML='<button class="x" style="float:right" onclick="this.parentElement.remove()">×</button><b>Our soundtrack 🎵</b><div id="playlistTracks"></div>';
-  document.body.appendChild(box);
-  const tracks=box.querySelector("#playlistTracks");
-  d.playlist.forEach((x,i)=>{
-    const row=document.createElement("div"); row.style.marginTop="12px";
-    const label=document.createElement("div"); label.innerHTML='<b>'+esc(x.name||("Song "+(i+1)))+'</b>';
-    const audio=document.createElement("audio"); audio.controls=true; audio.preload="metadata"; audio.src=x.src; audio.style.width="100%";
-    row.append(label,audio); tracks.appendChild(row);
-  });
-}
-function showMusicMessage(message){
-  let old=document.getElementById("musicPlayer"); if(old)old.remove();
-  const box=document.createElement("div"); box.id="musicPlayer"; box.className="toast"; box.style.maxWidth="520px"; box.style.zIndex="9999";
-  box.innerHTML='<button class="x" style="float:right" onclick="this.parentElement.remove()">×</button>'+esc(message);
-  document.body.appendChild(box);
-}
-
+/* Persistent soundtrack player */
+let soundtrackAudio=null,soundtrackIndex=-1,soundtrackPlaying=false;
+function soundtrackTracks(){const d=data();return Array.isArray(d.playlist)?d.playlist.filter(x=>x&&(x.src||x.url)):[]}
+function ensureSoundtrackBar(){let bar=document.getElementById("soundtrackBar");if(bar)return bar;bar=document.createElement("div");bar.id="soundtrackBar";bar.innerHTML='<div class="soundtrack-info"><span class="soundtrack-note">♫</span><div><b id="soundtrackTitle">Our Little Soundtrack</b><small id="soundtrackStatus">Ready to play ♡</small></div></div><div class="soundtrack-controls"><button type="button" id="soundtrackPrev">⏮</button><button type="button" id="soundtrackPlay">▶</button><button type="button" id="soundtrackNext">⏭</button></div><button type="button" id="soundtrackClose" class="soundtrack-close">×</button>';document.body.appendChild(bar);bar.querySelector("#soundtrackPlay").addEventListener("click",toggleSoundtrackPlayback);bar.querySelector("#soundtrackPrev").addEventListener("click",()=>playSoundtrackTrack(soundtrackIndex-1));bar.querySelector("#soundtrackNext").addEventListener("click",()=>playSoundtrackTrack(soundtrackIndex+1));bar.querySelector("#soundtrackClose").addEventListener("click",stopSoundtrack);return bar}
+function updateSoundtrackBar(){const bar=document.getElementById("soundtrackBar"),btn=document.getElementById("musicBtn"),tracks=soundtrackTracks();if(!bar)return;const item=tracks[soundtrackIndex];document.getElementById("soundtrackTitle").textContent=item?.name||"Our Little Soundtrack";document.getElementById("soundtrackStatus").textContent=soundtrackPlaying?"Now playing ♡":(soundtrackAudio?"Paused":"Ready to play ♡");document.getElementById("soundtrackPlay").textContent=soundtrackPlaying?"❚❚":"▶";if(btn)btn.textContent=soundtrackPlaying?"♫ Our little soundtrack is playing ♡":"♫ Play our little soundtrack"}
+function playSoundtrackTrack(index){const tracks=soundtrackTracks();if(!tracks.length){showMusicMessage("Add songs to Our Little Playlist first ♡");return}if(index<0)index=0;if(index>=tracks.length){stopSoundtrack();return}const track=tracks[index];if(!track.src){showPanel("playlist");showMusicMessage("This song is a Spotify track. Open the playlist to play it ♡");return}soundtrackIndex=index;if(!soundtrackAudio){soundtrackAudio=new Audio();soundtrackAudio.preload="auto";soundtrackAudio.addEventListener("ended",()=>playSoundtrackTrack(soundtrackIndex+1));soundtrackAudio.addEventListener("play",()=>{soundtrackPlaying=true;updateSoundtrackBar()});soundtrackAudio.addEventListener("pause",()=>{soundtrackPlaying=false;updateSoundtrackBar()})}soundtrackAudio.src=track.src;ensureSoundtrackBar();soundtrackAudio.play().then(()=>{soundtrackPlaying=true;updateSoundtrackBar()}).catch(()=>showMusicMessage("Tap the play button once more to start the soundtrack ♡"))}
+function toggleSoundtrackPlayback(){if(!soundtrackAudio||!soundtrackAudio.src){playSoundtrackTrack(soundtrackIndex<0?0:soundtrackIndex);return}if(soundtrackAudio.paused)soundtrackAudio.play().catch(()=>{});else soundtrackAudio.pause()}
+function stopSoundtrack(){if(soundtrackAudio){soundtrackAudio.pause();soundtrackAudio.currentTime=0}soundtrackPlaying=false;soundtrackIndex=-1;document.getElementById("soundtrackBar")?.remove();const btn=document.getElementById("musicBtn");if(btn)btn.textContent="♫ Play our little soundtrack"}
+function toggleMusic(){const tracks=soundtrackTracks();if(!tracks.length){showMusicMessage("Add songs to Our Little Playlist first ♡");return}if(soundtrackAudio&&!soundtrackAudio.paused){soundtrackAudio.pause();return}if(soundtrackAudio&&soundtrackIndex>=0){soundtrackAudio.play().catch(()=>{});return}playSoundtrackTrack(0)}
+function showPlaylistPlayer(){showPanel("playlist")}
+function showMusicMessage(message){let old=document.getElementById("musicPlayer");if(old)old.remove();const box=document.createElement("div");box.id="musicPlayer";box.className="toast";box.style.maxWidth="520px";box.style.zIndex="9999";box.innerHTML='<button class="x" style="float:right" onclick="this.parentElement.remove()">×</button>'+esc(message);document.body.appendChild(box)}
 /* V8 motion layer */
 (function(){
   const symbols=['♡','♥','✦','✧','•'];
