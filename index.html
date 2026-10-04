@@ -18,6 +18,11 @@
     <p id="lockIntro">A tiny place that belongs to us. Create a private code the first time you open it.</p>
     <input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="Private code">
     <button class="primary" onclick="unlock()">Enter our world ♡</button>
+    <div class="lock-widgets">
+      <div class="lock-widget"><span>🌙</span><b id="lockDays">—</b><small>days until we meet</small></div>
+      <div class="lock-widget"><span>🌍</span><b id="lockTimes">Lusaka — · Baku —</b><small>our two little worlds</small></div>
+      <div class="lock-widget"><span>💌</span><b id="lockNote">A little note for you ♡</b><small>today's little note</small></div>
+    </div>
     <p id="lockHint" class="hint"></p><button class="forgot" onclick="forgotCode()">Forgot the code?</button>
   </div>
 </div>
