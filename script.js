@@ -95,7 +95,57 @@ function theListPanel(){
   return `<p class="eyebrow">THE LIST</p><h2>Movies & Series 🎬🍿</h2><p>Our shared list of things we want to watch together. Add anything — movie nights, series, anime, comfort shows, or that one thing one of us keeps insisting is amazing. 😂</p><div class="recipe-toolbar"><button class="primary" onclick="showPanel('edit');setTimeout(()=>editSection('watchlist'),50)">＋ Add to The List</button><button class="mini" onclick="showPanel('edit');setTimeout(()=>editSection('watchlist'),50)">✏️ Edit The List</button></div>${groups.map(g=>{const arr=items.filter(x=>(x.status||'Want to watch')===g);return `<section class="watch-section"><h3>${g} <span>${arr.length}</span></h3>${arr.length?`<div class="watch-grid">${arr.map(x=>watchCard(x)).join('')}</div>`:`<div class="message soft">Nothing here yet. ♡</div>`}</section>`}).join('')}`;
 }
 function watchCard(x){return `<article class="watch-card"><div class="watch-poster">${x.photo?`<img src="${esc(x.photo)}" alt="${esc(x.title||'Poster')}">`:'🎬'}</div><div><div class="recipe-meta">${esc(x.type||'Movie')} · ${esc(x.status||'Want to watch')}</div><h3>${esc(x.title||'Untitled')}</h3>${x.year?`<small>${esc(x.year)}</small>`:''}${x.note?`<p>${esc(x.note)}</p>`:''}${x.link?`<a class="mini" href="${esc(x.link)}" target="_blank" rel="noopener">🔗 Where to watch / info</a>`:''}</div></article>`}
-function memoryPanel(){const d=data();return `<p class="eyebrow">THE SCRAPBOOK WALL</p><h2>Our Memories 📸</h2><p>Old memories are still here — and now you can add and edit your own.</p><div class="memory-grid">${d.memories.map((m,i)=>`<figure class="polaroid">${m.kind==="video"?`<video controls playsinline preload="metadata" src="${m.src}"></video>`:`<img src="${m.src}" alt="${esc(m.title)}">`}<figcaption>${esc(m.caption)}</figcaption></figure>`).join("")}</div>`}
+function memoryPanel(){
+  const d=data();
+  const memories=d.memories||[];
+
+  return `
+    <p class="eyebrow">THE SCRAPBOOK WALL</p>
+    <h2>Our Memories 📸</h2>
+    <p class="memory-intro">The little moments that make us, us. ♡</p>
+
+    <div class="memory-actions">
+      <button class="primary" onclick="showPanel('edit');setTimeout(()=>editSection('memories'),50)">
+        ＋ Add a Memory
+      </button>
+    </div>
+
+    ${
+      memories.length
+      ? `
+        <div class="memory-count">
+          ${memories.length} little ${memories.length===1?'memory':'memories'} ♡
+        </div>
+
+        <div class="memory-grid">
+          ${memories.map((m,i)=>`
+            <figure class="polaroid memory-card">
+              ${
+                m.kind==="video"
+                ? `<video controls playsinline preload="metadata" src="${esc(m.src)}"></video>`
+                : `<img src="${esc(m.src)}" alt="${esc(m.title||'Our memory')}">`
+              }
+              <figcaption>
+                <strong>${esc(m.title||'A little memory ♡')}</strong>
+                <span>${esc(m.caption||'')}</span>
+              </figcaption>
+            </figure>
+          `).join("")}
+        </div>
+      `
+      : `
+        <div class="memory-empty">
+          <div>📸</div>
+          <h3>Our scrapbook is waiting...</h3>
+          <p>Add your first little moment together. ♡</p>
+          <button class="primary" onclick="showPanel('edit');setTimeout(()=>editSection('memories'),50)">
+            ＋ Add our first memory
+          </button>
+        </div>
+      `
+    }
+  `;
+}
 function carePanel(){const d=data();return `<p class="eyebrow">JUST FOR YOU</p><h2>A Little Care Package 🎁</h2><div class="message">🎧 Your shared soundtrack<br>📸 Our memories<br>💌 Love letters<br>🎟️ Love coupons<br>🍳 Future cooking dates</div><div class="option-grid"><button class="option" onclick="coupon('One free cuddle')">🎟️ Cuddle coupon</button><button class="option" onclick="coupon('One forehead kiss')">🎟️ Forehead kiss</button><button class="option" onclick="coupon('One date planned by Alice')">🎟️ Alice plans the date</button></div><div id="couponResult"></div>${d.coupons.length?'<h3>Saved coupons</h3>'+d.coupons.map(x=>`<div class="message">🎟️ ${esc(x)}</div>`).join(""):''}`}
 function plansPanel(){const d=data();return `<p class="eyebrow">OUR PLANS</p><h2>Things We Want To Do Together 🌷</h2><p>Every little plan we add lives here.</p>${(d.plans||[]).length?`<div class="option-grid">${d.plans.map(x=>`<div class="message">🌷 ${esc(x)}</div>`).join("")}</div>`:`<div class="message">No plans yet. Add one in Our Little Editor. ♡</div>`}<button class="mini" onclick="showPanel('edit');setTimeout(()=>editSection('plans'),50)">✏️ Edit our plans</button>`}
 function playlistPanel(){const d=data(),tracks=d.playlist||[];if(!tracks.length)return `<p class="eyebrow">OUR LITTLE PLAYLIST</p><h2>Our Little Playlist 🎵</h2><p>Our songs live online, so you can listen from Lusaka or Baku. ♡</p><div class="message">🎧 No songs yet — add a Spotify link from <b>Our Little Editor → Edit Soundtrack</b>.</div><button class="primary" onclick="showPanel('edit');setTimeout(()=>editSection('playlist'),50)">🎵 Add our songs ♡</button>`;return `<p class="eyebrow">OUR LITTLE PLAYLIST</p><h2>Our Little Playlist 🎵</h2><p>Our soundtrack is online — no MP3 uploads needed. Press play on any song. ♡</p><div class="playlist-player">${tracks.map((x,i)=>`<div class="playlist-item online-track"><div><b>${esc(x.name||('Song '+(i+1)))}</b></div>${x.spotify?`<iframe src="${esc(x.spotify)}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius:12px"></iframe>`:x.src?`<audio controls preload="metadata" src="${x.src}"></audio>`:''}${x.url?`<a class="mini" href="${esc(x.url)}" target="_blank" rel="noopener">Open in Spotify ↗</a>`:''}</div>`).join('')}</div><button class="mini" onclick="showPanel('edit');setTimeout(()=>editSection('playlist'),50)">✏️ Edit playlist</button>`}
