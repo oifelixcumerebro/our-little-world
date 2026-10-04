@@ -277,6 +277,30 @@ function showMusicMessage(message){
 })();
 
 
+/* Love notifications */
+function setupLoveNotifications(){
+  const btn=document.getElementById('notifyAppBtn');
+  if(!btn || !('Notification' in window)) return;
+  if(Notification.permission==='granted'){btn.textContent='💌 Love notifications on';btn.classList.remove('hidden');return;}
+  if(Notification.permission!=='denied') btn.classList.remove('hidden');
+}
+async function enableLoveNotifications(){
+  if(!('Notification' in window)) return alert('Notifications are not supported by this browser.');
+  const permission=await Notification.requestPermission();
+  const btn=document.getElementById('notifyAppBtn');
+  if(permission==='granted'){
+    if(btn) btn.textContent='💌 Love notifications on';
+    const note=typeof widgetMessage==='function'?widgetMessage():'A little piece of our world is waiting for you ♡';
+    navigator.serviceWorker?.ready.then(reg=>reg.showNotification('Our Little World ♡',{body:note,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:'love-note'}));
+    toast('Love notifications are on ♡');
+  }else if(permission==='denied'){
+    if(btn) btn.classList.add('hidden');
+    toast('Notifications are blocked in this browser.');
+  }
+}
+document.addEventListener('click',e=>{if(e.target?.id==='notifyAppBtn')enableLoveNotifications();});
+document.addEventListener('DOMContentLoaded',setupLoveNotifications);
+
 // App installation support (PWA)
 let deferredInstallPrompt = null;
 function isStandaloneApp(){
