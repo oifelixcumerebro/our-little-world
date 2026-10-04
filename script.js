@@ -279,6 +279,24 @@ function showMusicMessage(message){
 
 // App installation support (PWA)
 let deferredInstallPrompt = null;
+function isStandaloneApp(){
+  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+}
+function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function showInstallHelp(){
+  if(isStandaloneApp()) return toast('Our little world is already an app ♡');
+  if(isIOS()){
+    alert('To install Our Little World on iPhone/iPad:\n\n1. Tap Share in Safari.\n2. Choose “Add to Home Screen”.\n3. Tap Add.\n\nThen open Our Little World from your new home-screen icon ♡');
+  }else{
+    alert('To install Our Little World:\n\nChoose “Install app” or “Add to Home screen” in your browser menu.\n\nOnce installed, open it from your phone home screen ♡');
+  }
+}
+function setupAppInstall(){
+  const btn=document.getElementById('installAppBtn');
+  if(!btn) return;
+  if(isStandaloneApp()){btn.classList.add('hidden');return;}
+  if(isIOS()) btn.classList.remove('hidden');
+}
 window.addEventListener('beforeinstallprompt', (event) => {
   event.preventDefault();
   deferredInstallPrompt = event;
@@ -288,16 +306,21 @@ window.addEventListener('beforeinstallprompt', (event) => {
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
   const btn = document.getElementById('installAppBtn');
-  if (btn) { btn.classList.add('hidden'); toast('Our little world is now an app ♡'); }
+  if (btn) btn.classList.add('hidden');
+  toast('Our little world is now an app ♡');
 });
 document.addEventListener('click', async (event) => {
-  if (event.target && event.target.id === 'installAppBtn' && deferredInstallPrompt) {
+  if (!event.target || event.target.id !== 'installAppBtn') return;
+  if(deferredInstallPrompt){
     deferredInstallPrompt.prompt();
     await deferredInstallPrompt.userChoice;
     deferredInstallPrompt = null;
     event.target.classList.add('hidden');
+  }else{
+    showInstallHelp();
   }
 });
+document.addEventListener('DOMContentLoaded', setupAppInstall);
 
 
 
