@@ -105,7 +105,14 @@ function memoryPanel(){
     {title:"a little memory 🎥",caption:"a little memory 🎥",src:"assets/memory-video-1.mp4",kind:"video"},
     {title:"another little memory 🎥",caption:"another little memory 🎥",src:"assets/memory-video-2.mp4",kind:"video"}
   ];
-  const memories=(d.memories&&d.memories.length?d.memories:fallback).map(m=>{
+  const existing=Array.isArray(d.memories)?d.memories:[];
+  const originalKeys=new Set(fallback.map(m=>m.src));
+  const merged=[...fallback];
+  existing.forEach(m=>{
+    const key=String(m?.src||"");
+    if(key && !originalKeys.has(key)) merged.push(m);
+  });
+  const memories=merged.map(m=>{
     const src=String(m.src||"");
     const fixedSrc=(src.startsWith("assets/")||src.startsWith("data:")||src.startsWith("blob:")||src.startsWith("http"))?src:"assets/"+src.replace(/^\/+/,"");
     return {...m,src:fixedSrc};
