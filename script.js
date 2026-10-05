@@ -189,7 +189,31 @@ function saveWatchlist(){const d=data();d.watchlist=(d.watchlist||[]);const jobs
 function saveLetters(){const d=data();d.letters.forEach((x,i)=>{x.title=document.getElementById(`lt${i}`).value;x.text=document.getElementById(`lx${i}`).value});saveData(d);toast("Letters saved 💌");editSection('letters')}
 function saveMemories(){const d=data();d.memories.forEach((x,i)=>{x.title=document.getElementById(`mt${i}`).value;x.caption=document.getElementById(`mc${i}`).value});saveData(d);toast("Memories saved 📸");editSection('memories')}
 function savePlans(){const d=data();d.plans=[...document.querySelectorAll('[id^=pt]')].map(x=>x.value);saveData(d);toast("Plans saved 🌷");editSection('plans')}
-function addMedia(){const fs=[...document.getElementById('mediaFiles').files];if(!fs.length)return;const d=data();fs.forEach(f=>{const r=new FileReader();r.onload=()=>{d.memories.push({title:f.name,caption:"A new little memory ♡",src:r.result,kind:f.type.startsWith('video')?'video':'image'});saveData(d);editSection('memories')};r.readAsDataURL(f)});toast("Adding your memories… ♡")}
+function addMedia(){
+  const input=document.getElementById('mediaFiles');
+  const fs=[...(input?.files||[])];
+  if(!fs.length)return;
+  const d=data();
+  const jobs=fs.map(f=>new Promise(resolve=>{
+    const r=new FileReader();
+    r.onload=()=>resolve({
+      title:f.name,
+      caption:"A new little memory ♡",
+      src:r.result,
+      kind:f.type.startsWith('video')?'video':'image'
+    });
+    r.onerror=()=>resolve(null);
+    r.readAsDataURL(f);
+  }));
+  Promise.all(jobs).then(items=>{
+    const added=items.filter(Boolean);
+    d.memories=Array.isArray(d.memories)?d.memories:[];
+    d.memories.push(...added);
+    saveData(d);
+    toast(added.length===1?"Memory added ♡":`${added.length} memories added ♡`);
+    editSection('memories');
+  });
+}
 function spotifyEmbed(url){try{const u=new URL(url);if(!u.hostname.includes('spotify.com'))return '';const m=u.pathname.match(/\/(track|album|playlist)\/([^/?]+)/);return m?`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator`:''}catch(e){return ''}}
 function addOnlineSong(){const name=document.getElementById('onlineSongName')?.value.trim();const url=document.getElementById('onlineSongUrl')?.value.trim();if(!name||!url){toast('Add the song name and Spotify link ♡');return}const embed=spotifyEmbed(url);if(!embed){toast('Please paste a Spotify song, album or playlist link ♡');return}const d=data();d.playlist=d.playlist||[];d.playlist.push({name,url,spotify:embed});saveData(d);toast('Online song added 🎵');editSection('playlist')}
 function addSongs(){const fs=[...document.getElementById('songFile').files];if(!fs.length)return;const d=data();fs.forEach(f=>{const r=new FileReader();r.onload=()=>{d.playlist=d.playlist||[];d.playlist.push({name:f.name,src:r.result});saveData(d);editSection('playlist')};r.readAsDataURL(f)});toast("Adding songs… 🎵")}
