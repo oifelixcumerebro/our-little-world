@@ -213,6 +213,10 @@
 
             initialLoadComplete = true;
 
+            // This device has the newer copy. Push it to the shared cloud
+            // instead of silently keeping the two devices out of sync.
+            uploadCurrent();
+
             return;
 
           }
