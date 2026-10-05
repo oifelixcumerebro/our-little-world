@@ -390,6 +390,19 @@ function renderWidgets(){
   const section=document.getElementById("todayWidgets");if(section&&!section.dataset.revealed){section.dataset.revealed="1";requestAnimationFrame(()=>section.classList.add("visible"))}
 }
 function initWidgets(){renderWidgets();renderLockWidgets();if(window.__aliceD_widgetTimer)clearInterval(window.__aliceD_widgetTimer);window.__aliceD_widgetTimer=setInterval(()=>{renderWidgets();renderLockWidgets()},60000);}
+
+/* Refresh the visible app when another device changes the shared cloud copy. */
+window.addEventListener("aliceD:cloud-updated",()=>{
+  try{
+    renderWidgets();
+    renderLockWidgets();
+    const panel=document.querySelector(".panel:not(.hidden)");
+    if(panel){
+      const active=panel.id;
+      if(active && typeof showPanel==="function") showPanel(active);
+    }
+  }catch(error){ console.error("[A Little Place Called Us] Cloud UI refresh failed:",error); }
+});
 function refreshWidgets(){renderWidgets();toast("Widgets refreshed ✨");}
 
 
